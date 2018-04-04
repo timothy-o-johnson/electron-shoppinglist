@@ -1,0 +1,26 @@
+{
+  "name": "shoppinglist",
+  "version": "1.0.0",
+  "description": "shopping list desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/timothy-o-johnson/electron-shoppinglist.git"
+  },
+  "keywords": [
+    "electron",
+    "shopping",
+    "list",
+    "shopping",
+    "list",
+    "practice"
+  ],
+  "author": "Timothy-O-Johnson",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^1.8.4"
+  }
+}
