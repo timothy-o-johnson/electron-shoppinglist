@@ -5,21 +5,27 @@ const path = require('path')
 const { app, BrowserWindow, Menu } = electron
 
 let mainWindow
+let addWindow
 
-// LIsten for the app to be ready
+// listen for the app to be ready
 app.on('ready', function () {
   // create new window
   mainWindow = new BrowserWindow({})
 
   // load html file into window
   mainWindow.loadURL(
+    // file://dirname/mainwindow.html
     url.format({
       pathname: path.join(__dirname, 'mainWindow.html'),
       protocol: 'file:',
       slashes: true
-      // file://dirname/mainwindow.html
     })
   )
+
+  // quit app when closed
+  mainWindow.on('closed', function () {
+    app.quit()
+  })
 
   // build menu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
@@ -28,26 +34,76 @@ app.on('ready', function () {
   Menu.setApplicationMenu(mainMenu)
 })
 
+// handle create add window
+function createAddWindow () {
+  addWindow = new BrowserWindow({
+    width: 300,
+    height: 200,
+    title: 'Add Shopping List Item'
+  })
+
+  addWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, 'addWindow.html'),
+      protocol: 'file:',
+      slashes: true
+    })
+  )
+
+  // Garbage collection handle
+  addWindow.on('close', function () {
+    addWindow = null
+  })
+}
+
 // create menu template
 const mainMenuTemplate = [
   {
     label: 'File',
     submenu: [
       {
-        label: 'Add Item'
+        label: 'Add Item',
+        accelerator: process.platform == 'darwin' ? 'Command+N' : 'Ctrl+N',
+        click () {
+          createAddWindow()
+        }
       },
       {
         label: 'Clear Items'
       },
       {
         label: 'Quit',
-        //determine platform
-        accelerator: process.platform == 'darwin' ? 'Command+Q': 'Ctrl+Q',
-        click(){
+        // determine platform
+        accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        click () {
           app.quit()
         }
       }
-
     ]
   }
 ]
+
+// if mac, add empty object to menu
+if (process.platform == 'darwin') {
+  mainMenuTemplate.unshift({})
+}
+
+// add developer tools item, if not in production
+
+if (process.env.NODE_ENV !== 'production') {
+  mainMenuTemplate.push({
+    label: 'Developer Tools',
+    submenu: [
+      {
+        role: 'reload'
+      },
+      {
+        label: 'Toggle DevTools',
+        accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+        click (item, focusedWindow) {
+          focusedWindow.toggleDevTools()
+        }
+      }
+    ]
+  })
+}
