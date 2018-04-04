@@ -57,8 +57,8 @@ function createAddWindow () {
 }
 
 // catch item:add
-ipcMain.on('item:add', function(e, item){
-  console.log(item);
+ipcMain.on('item:add', function (e, item) {
+  console.log(item)
 
   mainWindow.webContents.send('item:add', item)
   addWindow.close()
@@ -79,7 +79,7 @@ const mainMenuTemplate = [
       {
         label: 'Clear Items',
         accelerator: process.platform == 'darwin' ? 'Command+E' : 'Ctrl+E',
-        click(){
+        click () {
           mainWindow.webContents.send('item:clear')
         }
       },
